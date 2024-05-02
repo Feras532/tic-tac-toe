@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/textViewPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 1"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_below="@id/textViewPlayer"
+        android:layout_centerHorizontal="true"/>
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rowCount="3"
+        android:columnCount="3"
+        android:layout_below="@id/textViewStatus"
+        android:layout_centerHorizontal="true">
+
+        <!-- Buttons from 0 to 8 -->
+        <Button android:id="@+id/button0" android:layout_width="100dp" android:layout_height="100dp" android:tag="0"/>
+        <Button android:id="@+id/button1" android:layout_width="100dp" android:layout_height="100dp" android:tag="1"/>
+        <Button android:id="@+id/button2" android:layout_width="100dp" android:layout_height="100dp" android:tag="2"/>
+        <Button android:id="@+id/button3" android:layout_width="100dp" android:layout_height="100dp" android:tag="3"/>
+        <Button android:id="@+id/button4" android:layout_width="100dp" android:layout_height="100dp" android:tag="4"/>
+        <Button android:id="@+id/button5" android:layout_width="100dp" android:layout_height="100dp" android:tag="5"/>
+        <Button android:id="@+id/button6" android:layout_width="100dp" android:layout_height="100dp" android:tag="6"/>
+        <Button android:id="@+id/button7" android:layout_width="100dp" android:layout_height="100dp" android:tag="7"/>
+        <Button android:id="@+id/button8" android:layout_width="100dp" android:layout_height="100dp" android:tag="8"/>
+    </GridLayout>
+
+    <Button
+        android:id="@+id/buttonReplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Replay"
+        android:layout_below="@id/gridLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>
