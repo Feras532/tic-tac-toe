@@ -73,15 +73,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPhoneNumberVerification(String phoneNumber) {
+        String completePhoneNumber = "+966" + phoneNumber;  // Prepend the Saudi Arabia country code
+
         PhoneAuthProvider.verifyPhoneNumber(
                 PhoneAuthOptions.newBuilder(mAuth)
-                        .setPhoneNumber(phoneNumber)
+                        .setPhoneNumber(completePhoneNumber)  // Use the complete phone number with country code
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
                         .setCallbacks(mCallbacks)
                         .build()
         );
-        Toast.makeText(this, "Verification code sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(this, "Verification code sent to " + completePhoneNumber, Toast.LENGTH_SHORT).show();
     }
 
     private void verifyPhoneNumberWithCode(String verificationId, String code) {

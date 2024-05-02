@@ -10,7 +10,7 @@
         android:id="@+id/editTextPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter phone number"
+        android:hint="Enter phone number (without country code)"
         android:inputType="phone"/>
 
     <Button

@@ -9,7 +9,7 @@ public class Welcome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome); // Make sure to use your actual layout file name
+        setContentView(R.layout.activity_welcome);
 
         TextView textViewWelcome = findViewById(R.id.textViewWelcome);
 
