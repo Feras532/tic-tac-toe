@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,7 +10,7 @@
         android:id="@+id/editTextPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter phone number"
+        android:hint="Enter phone number (without country code)"
         android:inputType="phone"/>
 
     <Button
@@ -20,11 +19,12 @@
         android:layout_height="wrap_content"
         android:text="Send Verification Code"
         android:layout_marginTop="16dp"/>
+
     <EditText
-        android:id="@+id/editTextCode"
+        android:id="@+id/login_otp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Verification Code"
+        android:hint="Enter OTP"
         android:inputType="number"/>
 
     <Button
@@ -33,4 +33,5 @@
         android:layout_height="wrap_content"
         android:text="Verify Code"
         android:layout_marginTop="16dp"/>
+
 </LinearLayout>
