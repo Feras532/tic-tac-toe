@@ -107,17 +107,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            // Show a Toast message that user is logged in
-            Toast.makeText(this, "User logged in: " + user.getPhoneNumber(), Toast.LENGTH_LONG).show();
-
-            // Create an Intent to start WelcomeActivity
-            Intent intent = new Intent(MainActivity.this, Welcome.class);
-            // Pass the user's ID to the WelcomeActivity
-            intent.putExtra("userId", user.getUid());
-            startActivity(intent);
-            finish(); // Optional: if you don't want to return to the MainActivity
+            if (user.getDisplayName() == null || user.getDisplayName().equals("")) {
+                // User is signed in but name is not set
+                Intent intent = new Intent(MainActivity.this, UserDetailsActivity.class);
+                startActivity(intent);
+            } else {
+                // Name is already set, proceed to welcome screen
+                Intent intent = new Intent(MainActivity.this, Welcome.class);
+                intent.putExtra("userId", user.getUid());
+                startActivity(intent);
+                finish();
+            }
         } else {
-            // Show a Toast message that user is not logged in
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
         }
     }
