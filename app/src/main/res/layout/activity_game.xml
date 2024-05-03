@@ -17,9 +17,10 @@
         android:id="@+id/textViewStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="Game Status"
         android:layout_below="@id/textViewPlayer"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"/>
 
     <GridLayout
         android:id="@+id/gridLayout"
@@ -28,7 +29,8 @@
         android:rowCount="3"
         android:columnCount="3"
         android:layout_below="@id/textViewStatus"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
 
         <!-- Buttons from 0 to 8 -->
         <Button android:id="@+id/button0" android:layout_width="100dp" android:layout_height="100dp" android:tag="0"/>
@@ -43,12 +45,21 @@
     </GridLayout>
 
     <Button
+        android:id="@+id/startGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start New Game"
+        android:layout_below="@id/gridLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+
+    <Button
         android:id="@+id/buttonReplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Replay"
-        android:layout_below="@id/gridLayout"
+        android:layout_below="@id/startGameButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>
