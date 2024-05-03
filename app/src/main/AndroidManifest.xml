@@ -24,6 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Welcome"></activity>
+        <activity android:name=".Game"></activity>
+
     </application>
 
 </manifest>
