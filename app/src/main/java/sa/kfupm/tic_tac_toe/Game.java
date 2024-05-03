@@ -39,6 +39,15 @@ public class Game extends AppCompatActivity {
             gameId = getIntent().getStringExtra("gameId");
             joinGame();
         }
+
+        // Initialize the Replay button
+        Button replayButton = findViewById(R.id.buttonReplay);
+        replayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replayGame();
+            }
+        });
     }
 
     private void setupBoard() {
@@ -222,5 +231,27 @@ public class Game extends AppCompatActivity {
         } else {
             disableBoard();
         }
+    }
+    private void replayGame() {
+        if (gameId != null && gameData != null) {
+            // Reset the game data locally
+            gameData.reset();
+            updateFirestoreWithNewGame();
+            updateGameUI();
+            enableBoard();
+        }
+    }
+
+    private void updateFirestoreWithNewGame() {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("board", gameData.getBoard());
+        updates.put("currentTurn", gameData.getCurrentTurn());
+        updates.put("gameOver", gameData.isGameOver());
+        updates.put("winner", gameData.getWinner());
+
+        //update albtaa3
+        db.collection("games").document(gameId).update(updates)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Game reset successfully"))
+                .addOnFailureListener(e -> Log.d("Firestore", "Error resetting game", e));
     }
 }

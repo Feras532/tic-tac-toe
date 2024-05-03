@@ -1,6 +1,7 @@
 package sa.kfupm.tic_tac_toe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GameData {
@@ -75,5 +76,11 @@ public class GameData {
 
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+    public void reset() {
+        this.board = Arrays.asList("", "", "", "", "", "", "", "", "");
+        this.gameOver = false;
+        this.winner = "";
+        this.currentTurn = player1Id;
     }
 }
