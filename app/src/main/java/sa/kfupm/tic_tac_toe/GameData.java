@@ -3,6 +3,7 @@ package sa.kfupm.tic_tac_toe;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class GameData {
     private String player1Id;
@@ -81,6 +82,8 @@ public class GameData {
         this.board = Arrays.asList("", "", "", "", "", "", "", "", "");
         this.gameOver = false;
         this.winner = "";
-        this.currentTurn = player1Id;
+        // Randomly choose who starts the game
+        Random random = new Random();
+        this.currentTurn = random.nextBoolean() ? player1Id : player2Id;
     }
 }
