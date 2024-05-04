@@ -27,7 +27,6 @@ public class UserDetailsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         nameInput = findViewById(R.id.editTextName);
         saveButton = findViewById(R.id.buttonSave);
-
         saveButton.setOnClickListener(v -> saveUserName());
     }
 

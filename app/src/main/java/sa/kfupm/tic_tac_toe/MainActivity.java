@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-
     private EditText phoneInput;
     private EditText otpInput;
     private Button sendCodeButton;
