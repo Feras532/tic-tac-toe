@@ -23,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Welcome"></activity>
+        <activity android:name=".LandingActivity"></activity>
+        <activity android:name=".OnlineTypeActivity"></activity>
         <activity android:name=".UserDetailsActivity"></activity>
         <activity android:name=".Game"></activity>
 

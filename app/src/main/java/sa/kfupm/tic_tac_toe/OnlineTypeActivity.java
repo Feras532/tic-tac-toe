@@ -6,16 +6,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Welcome extends AppCompatActivity {
+public class OnlineTypeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_online_type);
 
         TextView textViewWelcome = findViewById(R.id.textViewWelcome);
         Button buttonCreateGame = findViewById(R.id.buttonCreateGame);
@@ -30,6 +29,7 @@ public class Welcome extends AppCompatActivity {
         } else {
             textViewWelcome.setText("Welcome, User ID: " + (user != null ? user.getUid() : "Unknown") + "!");
         }
+
         buttonCreateGame.setOnClickListener(view -> {
             Intent intent = new Intent(this, Game.class);
             intent.putExtra("action", "create");

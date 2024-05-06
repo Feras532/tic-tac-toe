@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             } else {
                 // Name is already set, proceed to welcome screen
-                Intent intent = new Intent(MainActivity.this, Welcome.class);
+                Intent intent = new Intent(MainActivity.this, LandingActivity.class);
                 intent.putExtra("userId", user.getUid());
                 startActivity(intent);
                 finish();
