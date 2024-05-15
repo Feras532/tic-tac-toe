@@ -30,9 +30,9 @@ public class LandingActivity extends AppCompatActivity {
         String displayName = user != null ? user.getDisplayName() : null;
 
         if (displayName != null && !displayName.isEmpty()) {
-            welcomeText.setText("Welcome, " + displayName + "!");
+            welcomeText.setText("Welcome back, " + displayName + "!");
         } else {
-            welcomeText.setText("Welcome, User ID: " + (user != null ? user.getUid() : "Unknown") + "!");
+            welcomeText.setText("Welcome back, User ID: " + (user != null ? user.getUid() : "Unknown") + "!");
         }
 
         playOnline.setOnClickListener( view -> {

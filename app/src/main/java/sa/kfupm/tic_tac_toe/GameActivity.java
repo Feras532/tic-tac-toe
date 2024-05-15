@@ -10,11 +10,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class Game extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
     private GameData gameData;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
@@ -32,12 +31,12 @@ public class Game extends AppCompatActivity {
         setupBoard();
         disableBoard();
 
-        String action = getIntent().getStringExtra("action");
-        if ("create".equals(action)) {
-            startNewGame();
-        } else if ("join".equals(action)) {
-            gameId = getIntent().getStringExtra("gameId");
+        gameId = getIntent().getStringExtra("gameId");
+        if (gameId != null && !gameId.isEmpty()) {
             joinGame();
+        } else {
+            Log.e("GameActivity", "No game ID provided");
+            finish(); // Exit if no game ID is provided
         }
 
         // Initialize the Replay button
@@ -151,48 +150,46 @@ public class Game extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.d("Firestore", "Error updating game", e));
     }
 
-    private void startNewGame() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+    private void joinGame() {
+        gameId = getIntent().getStringExtra("gameId"); // Getting the gameId passed from WaitingActivity
+
+        if (gameId == null || gameId.isEmpty()) {
+            Toast.makeText(this, "Game ID is required to join a game", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        gameId = db.collection("games").document().getId();
-        GameData newGameData = new GameData(currentUser.getUid()); // Assuming constructor initializes the game state
-        db.collection("games").document(gameId).set(newGameData)
-                .addOnSuccessListener(aVoid -> {
-                    gameData = newGameData;
-                    addGameListener();
-                    enableBoard();
-                    Toast.makeText(this, "New game started. You are 'X'", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Game", "Failed to create game", e);
-                    Toast.makeText(this, "Failed to start new game", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void joinGame() {
         DocumentReference gameRef = db.collection("games").document(gameId);
         gameRef.get().addOnSuccessListener(documentSnapshot -> {
             gameData = documentSnapshot.toObject(GameData.class);
-            if (gameData.getPlayer2Id() == null || gameData.getPlayer2Id().isEmpty()) {
-                gameData.setPlayer2Id(mAuth.getCurrentUser().getUid());
-                gameRef.set(gameData)
-                        .addOnSuccessListener(aVoid -> {
-                            addGameListener();
-                            enableBoard();
-                            Toast.makeText(this, "Joined game. You are 'O'", Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e("Game", "Failed to update game with player 2 ID", e);
-                            Toast.makeText(this, "Failed to update game data", Toast.LENGTH_SHORT).show();
-                        });
+            if (gameData != null) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    if (gameData.getPlayer1Id().equals(currentUser.getUid())) {
+                        // The current user is Player X
+                        addGameListener();
+                        enableBoard();
+                        Toast.makeText(this, "You are 'X'. Waiting for Player 'O' to join.", Toast.LENGTH_LONG).show();
+                    } else if (gameData.getPlayer2Id() == null || gameData.getPlayer2Id().isEmpty()) {
+                        // Second player joins the game as Player O
+                        gameData.setPlayer2Id(currentUser.getUid());
+                        gameRef.update("player2Id", currentUser.getUid())
+                                .addOnSuccessListener(aVoid -> {
+                                    addGameListener();
+                                    enableBoard();
+                                    Toast.makeText(this, "You are 'O'. Game on!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Game", "Failed to join game", e);
+                                });
+                    } else {
+                        // Game already has two players
+                        addGameListener();
+                        enableBoard();
+                        Toast.makeText(this, "Game in progress.", Toast.LENGTH_SHORT).show();
+                    }
+                }
             } else {
-                addGameListener();
-                enableBoard();
-                Toast.makeText(this, "Game already has two players", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Game data not found.", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(e -> {
             Log.e("Game", "Error fetching game data", e);
