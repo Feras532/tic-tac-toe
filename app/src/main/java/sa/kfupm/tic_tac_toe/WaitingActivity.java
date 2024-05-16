@@ -9,6 +9,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class WaitingActivity extends AppCompatActivity {
@@ -67,6 +69,7 @@ public class WaitingActivity extends AppCompatActivity {
                     // Second player has joined, proceed to the game
                     Intent intent = new Intent(WaitingActivity.this, GameActivity.class);
                     intent.putExtra("gameId", gameId);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish(); // Finish this activity to prevent returning to it
                 } else {
@@ -78,4 +81,5 @@ public class WaitingActivity extends AppCompatActivity {
             }
         });
     }
+
 }
