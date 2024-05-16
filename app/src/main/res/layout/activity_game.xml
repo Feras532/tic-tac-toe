@@ -8,12 +8,11 @@
     android:background="@color/white">
 
     <TextView
-        android:id="@+id/textViewPlayer"
+        android:id="@+id/playerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:fontFamily="@font/roboto"
-        android:text="Player 1"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -34,7 +33,7 @@
         android:rowCount="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPlayer">
+        app:layout_constraintTop_toBottomOf="@+id/playerName">
 
         <!-- Buttons from 0 to 8 -->
         <Button
@@ -192,7 +191,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/roboto"
-            android:text="Wins: x"
+            android:text="Wins: 0"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -213,7 +212,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/roboto"
-            android:text="Loses: y"
+            android:text="Losses: 0"
             android:textColor="@color/black" />
     </LinearLayout>
 

@@ -4,16 +4,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
+
+    private TextView textViewPlayer;
+    private TextView winsCounter;
+    private TextView losesCounter;
+    private String displayName;
     private GameData gameData;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
@@ -27,6 +34,16 @@ public class GameActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        textViewPlayer = findViewById(R.id.playerName);
+        winsCounter = findViewById(R.id.winsCounter);
+        losesCounter = findViewById(R.id.losesCounter);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        displayName = user != null ? user.getDisplayName() : null;
+        if (!(displayName != null && !displayName.isEmpty())) {
+            displayName = user != null ? user.getUid() : "Unknown";
+        }
 
         setupBoard();
         disableBoard();
@@ -113,6 +130,7 @@ public class GameActivity extends AppCompatActivity {
                 gameData.setGameOver(true);
                 gameData.setWinner(gameData.getCurrentTurn()); // Set the current player as winner
                 Toast.makeText(this, "Player " + (line.equals("XXX") ? "X" : "O") + " wins!", Toast.LENGTH_LONG).show();
+                updateGameResult(gameData.getCurrentTurn().equals(gameData.getPlayer1Id())); // Pass true if player 1 wins
                 updateFirestore(); // Update the database with the new game state
                 disableBoard(); // Disable the board as the game is over
                 return;
@@ -169,6 +187,7 @@ public class GameActivity extends AppCompatActivity {
                         addGameListener();
                         enableBoard();
                         Toast.makeText(this, "You are 'X'. Waiting for Player 'O' to join.", Toast.LENGTH_LONG).show();
+                        textViewPlayer.setText(displayName + " as X");
                     } else if (gameData.getPlayer2Id() == null || gameData.getPlayer2Id().isEmpty()) {
                         // Second player joins the game as Player O
                         gameData.setPlayer2Id(currentUser.getUid());
@@ -177,6 +196,7 @@ public class GameActivity extends AppCompatActivity {
                                     addGameListener();
                                     enableBoard();
                                     Toast.makeText(this, "You are 'O'. Game on!", Toast.LENGTH_SHORT).show();
+                                    textViewPlayer.setText(displayName + " as O");
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e("Game", "Failed to join game", e);
@@ -250,5 +270,52 @@ public class GameActivity extends AppCompatActivity {
         db.collection("games").document(gameId).update(updates)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Game reset successfully"))
                 .addOnFailureListener(e -> Log.d("Firestore", "Error resetting game", e));
+    }
+
+    private void updateGameResult(boolean player1Wins) {
+        DocumentReference gameRef = db.collection("games").document(gameId);
+
+        db.runTransaction(transaction -> {
+            DocumentSnapshot snapshot = transaction.get(gameRef);
+            if (player1Wins) {
+                long winsPlayer1 = snapshot.getLong("winsPlayer1") + 1;
+                transaction.update(gameRef, "winsPlayer1", winsPlayer1);
+                long lossesPlayer2 = snapshot.getLong("lossesPlayer2") + 1;
+                transaction.update(gameRef, "lossesPlayer2", lossesPlayer2);
+            } else {
+                long winsPlayer2 = snapshot.getLong("winsPlayer2") + 1;
+                transaction.update(gameRef, "winsPlayer2", winsPlayer2);
+                long lossesPlayer1 = snapshot.getLong("lossesPlayer1") + 1;
+                transaction.update(gameRef, "lossesPlayer1", lossesPlayer1);
+            }
+            return null;
+        }).addOnSuccessListener(result -> {
+            updateWinLossUI();
+        }).addOnFailureListener(e -> {
+            Log.e("GameActivity", "Transaction failure: ", e);
+        });
+    }
+
+    private void updateWinLossUI() {
+        DocumentReference gameRef = db.collection("games").document(gameId);
+        gameRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long winsPlayer1 = documentSnapshot.getLong("winsPlayer1");
+                Long lossesPlayer1 = documentSnapshot.getLong("lossesPlayer1");
+                Long winsPlayer2 = documentSnapshot.getLong("winsPlayer2");
+                Long lossesPlayer2 = documentSnapshot.getLong("lossesPlayer2");
+
+                // Assuming you have a way to know if the current user is player 1 or player 2
+                if (mAuth.getCurrentUser().getUid().equals(gameData.getPlayer1Id())) {
+                    winsCounter.setText("Wins: " + (winsPlayer1 != null ? winsPlayer1.toString() : "0"));
+                    losesCounter.setText("Losses: " + (lossesPlayer1 != null ? lossesPlayer1.toString() : "0"));
+                } else {
+                    winsCounter.setText("Wins: " + (winsPlayer2 != null ? winsPlayer2.toString() : "0"));
+                    losesCounter.setText("Losses: " + (lossesPlayer2 != null ? lossesPlayer2.toString() : "0"));
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("GameActivity", "Error fetching game results", e);
+        });
     }
 }
