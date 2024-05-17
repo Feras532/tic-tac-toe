@@ -129,7 +129,6 @@ public class GameActivity extends AppCompatActivity {
             if (line.equals("XXX") || line.equals("OOO")) {
                 gameData.setGameOver(true);
                 gameData.setWinner(gameData.getCurrentTurn()); // Set the current player as winner
-                Toast.makeText(this, "Player " + (line.equals("XXX") ? "X" : "O") + " wins!", Toast.LENGTH_LONG).show();
                 updateGameResult(gameData.getCurrentTurn().equals(gameData.getPlayer1Id())); // Pass true if player 1 wins
                 updateFirestore(); // Update the database with the new game state
                 disableBoard(); // Disable the board as the game is over
@@ -149,7 +148,6 @@ public class GameActivity extends AppCompatActivity {
         if (isDraw) {
             gameData.setGameOver(true);
             gameData.setWinner("Draw");
-            Toast.makeText(this, "The game is a draw!", Toast.LENGTH_LONG).show();
             updateFirestore();
             disableBoard();
         }
@@ -230,6 +228,7 @@ public class GameActivity extends AppCompatActivity {
                         if (updatedGameData != null) {
                             gameData = updatedGameData;
                             updateGameUI(); // Update the UI based on the new game state
+                            showGameStatusToast();
                         }
                     } else {
                         Log.d("Firestore", "Current game data: null");
@@ -249,6 +248,21 @@ public class GameActivity extends AppCompatActivity {
             disableBoard();
         }
     }
+
+    private void showGameStatusToast() {
+        if (gameData.isGameOver()) {
+            if (gameData.getWinner().equals("Draw")) {
+                Toast.makeText(this, "The game is a draw!", Toast.LENGTH_LONG).show();
+            } else {
+                String winner = gameData.getWinner().equals(gameData.getPlayer1Id()) ? "X" : "O";
+                Toast.makeText(this, "Player " + winner + " wins!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            String currentTurnPlayer = gameData.getCurrentTurn().equals(gameData.getPlayer1Id()) ? "X" : "O";
+            Toast.makeText(this, "It's Player " + currentTurnPlayer + "'s turn!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void replayGame() {
         if (gameId != null && gameData != null) {
             // Reset the game data locally
@@ -266,7 +280,6 @@ public class GameActivity extends AppCompatActivity {
         updates.put("gameOver", gameData.isGameOver());
         updates.put("winner", gameData.getWinner());
 
-        //update albtaa3
         db.collection("games").document(gameId).update(updates)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Game reset successfully"))
                 .addOnFailureListener(e -> Log.d("Firestore", "Error resetting game", e));
