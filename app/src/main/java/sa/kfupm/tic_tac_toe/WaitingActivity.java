@@ -72,6 +72,7 @@ public class WaitingActivity extends AppCompatActivity {
                     gameStarted = true;
                     Intent intent = new Intent(WaitingActivity.this, GameActivity.class);
                     intent.putExtra("gameId", gameId);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 }

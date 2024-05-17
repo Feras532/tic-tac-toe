@@ -1,5 +1,6 @@
 package sa.kfupm.tic_tac_toe;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -76,15 +77,19 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private void disableBoard() {
         for (Button button : buttons) {
             button.setEnabled(false);
+            button.setBackgroundColor(R.color.black);
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private void enableBoard() {
         for (Button button : buttons) {
             button.setEnabled(true);
+            button.setBackgroundColor(R.color.red);
         }
     }
 
@@ -114,24 +119,30 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void checkGameState() {
-        String[] lines = new String[]{
-                gameData.getBoard().get(0) + gameData.getBoard().get(1) + gameData.getBoard().get(2),
-                gameData.getBoard().get(3) + gameData.getBoard().get(4) + gameData.getBoard().get(5),
-                gameData.getBoard().get(6) + gameData.getBoard().get(7) + gameData.getBoard().get(8),
-                gameData.getBoard().get(0) + gameData.getBoard().get(3) + gameData.getBoard().get(6),
-                gameData.getBoard().get(1) + gameData.getBoard().get(4) + gameData.getBoard().get(7),
-                gameData.getBoard().get(2) + gameData.getBoard().get(5) + gameData.getBoard().get(8),
-                gameData.getBoard().get(0) + gameData.getBoard().get(4) + gameData.getBoard().get(8),
-                gameData.getBoard().get(2) + gameData.getBoard().get(4) + gameData.getBoard().get(6)
+        int[][] winningLines = {
+                {0, 1, 2}, // Row 1
+                {3, 4, 5}, // Row 2
+                {6, 7, 8}, // Row 3
+                {0, 3, 6}, // Column 1
+                {1, 4, 7}, // Column 2
+                {2, 5, 8}, // Column 3
+                {0, 4, 8}, // Diagonal 1
+                {2, 4, 6}  // Diagonal 2
         };
 
-        for (String line : lines) {
-            if (line.equals("XXX") || line.equals("OOO")) {
+        for (int[] line : winningLines) {
+            if (!gameData.getBoard().get(line[0]).isEmpty() &&
+                    gameData.getBoard().get(line[0]).equals(gameData.getBoard().get(line[1])) &&
+                    gameData.getBoard().get(line[1]).equals(gameData.getBoard().get(line[2]))) {
+
                 gameData.setGameOver(true);
                 gameData.setWinner(gameData.getCurrentTurn()); // Set the current player as winner
                 updateGameResult(gameData.getCurrentTurn().equals(gameData.getPlayer1Id())); // Pass true if player 1 wins
                 updateFirestore(); // Update the database with the new game state
                 disableBoard(); // Disable the board as the game is over
+
+                // Highlight the winning buttons
+                //highlightWinningButtons(line);
                 return;
             }
         }
@@ -228,6 +239,7 @@ public class GameActivity extends AppCompatActivity {
                         if (updatedGameData != null) {
                             gameData = updatedGameData;
                             updateGameUI(); // Update the UI based on the new game state
+                            updateWinLossUI(); // Make sure this is called to update counters
                             showGameStatusToast();
                         }
                     } else {
@@ -318,7 +330,6 @@ public class GameActivity extends AppCompatActivity {
                 Long winsPlayer2 = documentSnapshot.getLong("winsPlayer2");
                 Long lossesPlayer2 = documentSnapshot.getLong("lossesPlayer2");
 
-                // Assuming you have a way to know if the current user is player 1 or player 2
                 if (mAuth.getCurrentUser().getUid().equals(gameData.getPlayer1Id())) {
                     winsCounter.setText("Wins: " + (winsPlayer1 != null ? winsPlayer1.toString() : "0"));
                     losesCounter.setText("Losses: " + (lossesPlayer1 != null ? lossesPlayer1.toString() : "0"));
@@ -330,5 +341,12 @@ public class GameActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> {
             Log.e("GameActivity", "Error fetching game results", e);
         });
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private void highlightWinningButtons(int[] winningLine) {
+        for (int index : winningLine) {
+            buttons[index].setBackgroundColor(R.color.dark_green);
+        }
     }
 }
