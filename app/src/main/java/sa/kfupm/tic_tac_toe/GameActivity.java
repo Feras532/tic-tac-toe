@@ -78,20 +78,25 @@ public class GameActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ResourceAsColor")
-    private void disableBoard() {
+    private void enableBoard() {
+        int boardColor = gameData.getCurrentTurn().equals(gameData.getPlayer1Id()) ?
+                getResources().getColor(R.color.board_player1) : getResources().getColor(R.color.board_player2);
+
         for (Button button : buttons) {
-            button.setEnabled(false);
-            button.setBackgroundColor(R.color.black);
+            button.setEnabled(true);
+            button.setBackgroundColor(boardColor);
         }
     }
 
     @SuppressLint("ResourceAsColor")
-    private void enableBoard() {
+    private void disableBoard() {
         for (Button button : buttons) {
-            button.setEnabled(true);
-            button.setBackgroundColor(R.color.red);
+            button.setEnabled(false);
+            button.setBackgroundColor(getResources().getColor(R.color.board_default));
         }
     }
+
+
 
     private void makeMove(int index) {
         if (gameData == null || !gameData.getCurrentTurn().equals(mAuth.getCurrentUser().getUid())) {
@@ -109,10 +114,15 @@ public class GameActivity extends AppCompatActivity {
             // Switch turns
             gameData.setCurrentTurn(gameData.getCurrentTurn().equals(gameData.getPlayer1Id()) ? gameData.getPlayer2Id() : gameData.getPlayer1Id());
             updateFirestore();
+
+            // Update the board color for the next turn
+            updateGameUI();
         } else {
             Log.d("Game", "Invalid move attempt at index " + index);
         }
     }
+
+
 
     private void updateGameBoardUI(int index, String playerSymbol) {
         buttons[index].setText(playerSymbol);
@@ -142,7 +152,7 @@ public class GameActivity extends AppCompatActivity {
                 disableBoard(); // Disable the board as the game is over
 
                 // Highlight the winning buttons
-                //highlightWinningButtons(line);
+                highlightWinningButtons(line);
                 return;
             }
         }
@@ -163,6 +173,8 @@ public class GameActivity extends AppCompatActivity {
             disableBoard();
         }
     }
+
+
 
     private void updateFirestore() {
         Map<String, Object> updates = new HashMap<>();
@@ -253,6 +265,7 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < gameData.getBoard().size(); i++) {
             buttons[i].setText(gameData.getBoard().get(i));
         }
+
         // Enable or disable the board based on whose turn it is
         if (gameData.getCurrentTurn().equals(mAuth.getCurrentUser().getUid())) {
             enableBoard();
@@ -260,6 +273,8 @@ public class GameActivity extends AppCompatActivity {
             disableBoard();
         }
     }
+
+
 
     private void showGameStatusToast() {
         if (gameData.isGameOver()) {
@@ -346,7 +361,8 @@ public class GameActivity extends AppCompatActivity {
     @SuppressLint("ResourceAsColor")
     private void highlightWinningButtons(int[] winningLine) {
         for (int index : winningLine) {
-            buttons[index].setBackgroundColor(R.color.dark_green);
+            buttons[index].setBackgroundColor(getResources().getColor(R.color.black));
         }
     }
+
 }

@@ -7,4 +7,9 @@
     <color name="green">#ABBF15</color>
     <color name="dark_green">#899911</color>
     <color name="red">#BF1F1F</color>
+
+    <color name="board_default">#ABBF15</color>
+    <color name="board_player1">#899911</color>
+    <color name="board_player2">#899911</color>
+
 </resources>
