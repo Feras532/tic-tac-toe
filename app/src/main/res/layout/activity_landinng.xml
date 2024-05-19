@@ -43,24 +43,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeText" />
 
-    <Button
-        android:id="@+id/offlineButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/orange"
-        android:fontFamily="@font/roboto"
-        android:text="Play Offline"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:icon="@drawable/offline_icon"
-        app:iconGravity="textStart"
-        app:iconSize="22dp"
-        app:iconTint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/onlineButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

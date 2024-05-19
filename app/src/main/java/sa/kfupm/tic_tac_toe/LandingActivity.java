@@ -15,7 +15,6 @@ public class LandingActivity extends AppCompatActivity {
 
     private TextView welcomeText;
     private Button playOnline;
-    private Button playOffline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +23,6 @@ public class LandingActivity extends AppCompatActivity {
 
         welcomeText = findViewById(R.id.welcomeText);
         playOnline = findViewById(R.id.onlineButton);
-        playOffline = findViewById(R.id.offlineButton);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String displayName = user != null ? user.getDisplayName() : null;
@@ -40,8 +38,6 @@ public class LandingActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        playOffline.setOnClickListener( view -> {
 
-        });
     }
 }
