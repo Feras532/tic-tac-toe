@@ -16,6 +16,7 @@ public class GameData {
     private int winsPlayer2;
     private int lossesPlayer1;
     private int lossesPlayer2;
+    private List<Integer> winningLineIndices;
 
     // Default constructor needed for Firebase
     public GameData() {
@@ -33,6 +34,7 @@ public class GameData {
         this.winsPlayer2 = 0;
         this.lossesPlayer1 = 0;
         this.lossesPlayer2 = 0;
+        this.winningLineIndices = new ArrayList<>();
     }
 
     // Getters and setters
@@ -116,6 +118,14 @@ public class GameData {
         this.lossesPlayer2 = lossesPlayer2;
     }
 
+    public List<Integer> getWinningLineIndices() {
+        return winningLineIndices;
+    }
+
+    public void setWinningLineIndices(List<Integer> winningLineIndices) {
+        this.winningLineIndices = winningLineIndices;
+    }
+
     public void reset() {
         this.board = Arrays.asList("", "", "", "", "", "", "", "", "");
         this.gameOver = false;
@@ -123,5 +133,6 @@ public class GameData {
         // Randomly choose who starts the game
         Random random = new Random();
         this.currentTurn = random.nextBoolean() ? player1Id : player2Id;
+        this.winningLineIndices.clear();
     }
 }

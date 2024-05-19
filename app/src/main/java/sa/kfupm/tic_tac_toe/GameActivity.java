@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ public class GameActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Button[] buttons = new Button[9];
     private String gameId;
+    private Boolean stopUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +87,9 @@ public class GameActivity extends AppCompatActivity {
 
         for (Button button : buttons) {
             button.setEnabled(true);
-            button.setBackgroundColor(boardColor);
+            if (!stopUpdate){
+                button.setBackgroundColor(boardColor);
+            }
         }
     }
 
@@ -92,11 +97,11 @@ public class GameActivity extends AppCompatActivity {
     private void disableBoard() {
         for (Button button : buttons) {
             button.setEnabled(false);
-            button.setBackgroundColor(getResources().getColor(R.color.board_default));
+            if (!stopUpdate) {
+                button.setBackgroundColor(getResources().getColor(R.color.board_default));
+            }
         }
     }
-
-
 
     private void makeMove(int index) {
         if (gameData == null || !gameData.getCurrentTurn().equals(mAuth.getCurrentUser().getUid())) {
@@ -122,8 +127,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void updateGameBoardUI(int index, String playerSymbol) {
         buttons[index].setText(playerSymbol);
     }
@@ -145,14 +148,14 @@ public class GameActivity extends AppCompatActivity {
                     gameData.getBoard().get(line[0]).equals(gameData.getBoard().get(line[1])) &&
                     gameData.getBoard().get(line[1]).equals(gameData.getBoard().get(line[2]))) {
 
+                stopUpdate = true;
                 gameData.setGameOver(true);
                 gameData.setWinner(gameData.getCurrentTurn()); // Set the current player as winner
+                gameData.setWinningLineIndices(Arrays.asList(line[0], line[1], line[2])); // Store the winning line indices
                 updateGameResult(gameData.getCurrentTurn().equals(gameData.getPlayer1Id())); // Pass true if player 1 wins
                 updateFirestore(); // Update the database with the new game state
                 disableBoard(); // Disable the board as the game is over
 
-                // Highlight the winning buttons
-                highlightWinningButtons(line);
                 return;
             }
         }
@@ -174,14 +177,13 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void updateFirestore() {
         Map<String, Object> updates = new HashMap<>();
         updates.put("board", gameData.getBoard());
         updates.put("currentTurn", gameData.getCurrentTurn());
         updates.put("gameOver", gameData.isGameOver());
         updates.put("winner", gameData.getWinner());
+        updates.put("winningLineIndices", gameData.getWinningLineIndices());
 
         db.collection("games").document(gameId)
                 .update(updates)
@@ -251,6 +253,9 @@ public class GameActivity extends AppCompatActivity {
                         if (updatedGameData != null) {
                             gameData = updatedGameData;
                             updateGameUI(); // Update the UI based on the new game state
+                            if (gameData.getWinningLineIndices() != null && !gameData.getWinningLineIndices().isEmpty()) {
+                                highlightWinningButtons(gameData.getWinningLineIndices().stream().mapToInt(i -> i).toArray());
+                            }
                             updateWinLossUI(); // Make sure this is called to update counters
                             showGameStatusToast();
                         }
@@ -274,8 +279,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void showGameStatusToast() {
         if (gameData.isGameOver()) {
             if (gameData.getWinner().equals("Draw")) {
@@ -294,6 +297,7 @@ public class GameActivity extends AppCompatActivity {
         if (gameId != null && gameData != null) {
             // Reset the game data locally
             gameData.reset();
+            stopUpdate = false;
             updateFirestoreWithNewGame();
             updateGameUI();
             enableBoard();
@@ -306,6 +310,7 @@ public class GameActivity extends AppCompatActivity {
         updates.put("currentTurn", gameData.getCurrentTurn());
         updates.put("gameOver", gameData.isGameOver());
         updates.put("winner", gameData.getWinner());
+        updates.put("winningLineIndices", gameData.getWinningLineIndices());
 
         db.collection("games").document(gameId).update(updates)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Game reset successfully"))
@@ -364,5 +369,4 @@ public class GameActivity extends AppCompatActivity {
             buttons[index].setBackgroundColor(getResources().getColor(R.color.black));
         }
     }
-
 }
