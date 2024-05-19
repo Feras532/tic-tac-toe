@@ -366,7 +366,7 @@ public class GameActivity extends AppCompatActivity {
     @SuppressLint("ResourceAsColor")
     private void highlightWinningButtons(int[] winningLine) {
         for (int index : winningLine) {
-            buttons[index].setBackgroundColor(getResources().getColor(R.color.black));
+            buttons[index].setBackgroundColor(getResources().getColor(R.color.dark_green));
         }
     }
 }
