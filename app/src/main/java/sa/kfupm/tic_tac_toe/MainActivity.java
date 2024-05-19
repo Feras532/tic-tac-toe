@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-
     private EditText phoneInput;
     private EditText otpInput;
     private Button sendCodeButton;
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPhoneNumberVerification(String phoneNumber) {
-        String completePhoneNumber = "+966" + phoneNumber;  // Prepend the Saudi Arabia country code
+        String completePhoneNumber = formatPhoneNumber(phoneNumber);  // Prepend the Saudi Arabia country code
 
         PhoneAuthProvider.verifyPhoneNumber(
                 PhoneAuthOptions.newBuilder(mAuth)
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             } else {
                 // Name is already set, proceed to welcome screen
-                Intent intent = new Intent(MainActivity.this, Welcome.class);
+                Intent intent = new Intent(MainActivity.this, LandingActivity.class);
                 intent.putExtra("userId", user.getUid());
                 startActivity(intent);
                 finish();
@@ -121,5 +120,32 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Formats a given phone number to the standard "+966xxxxxxxxx" format.
+     * @param input The input phone number in various possible formats.
+     * @return The formatted phone number.
+     */
+    public static String formatPhoneNumber(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        // Remove all non-digit characters for consistency
+        String digitsOnly = input.replaceAll("\\D", "");
+
+        // Check if the number starts with the country code digits without the '+'
+        if (digitsOnly.startsWith("966")) {
+            return "+" + digitsOnly;
+        }
+
+        // Check if the number starts with a '0'
+        if (digitsOnly.startsWith("0")) {
+            return "+966" + digitsOnly.substring(1);
+        }
+
+        // If no recognizable country code or leading zero, assume it's a local number
+        return "+966" + digitsOnly;
     }
 }

@@ -27,7 +27,6 @@ public class UserDetailsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         nameInput = findViewById(R.id.editTextName);
         saveButton = findViewById(R.id.buttonSave);
-
         saveButton.setOnClickListener(v -> saveUserName());
     }
 
@@ -45,7 +44,7 @@ public class UserDetailsActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Log.d("UpdateProfile", "User profile updated.");
                                 // Redirect to Welcome Activity
-                                Intent intent = new Intent(UserDetailsActivity.this, Welcome.class);
+                                Intent intent = new Intent(UserDetailsActivity.this, LandingActivity.class);
                                 intent.putExtra("userId", user.getUid());
                                 intent.putExtra("userName", name);
                                 startActivity(intent);

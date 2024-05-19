@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#FEFBF6</color>
+    <color name="black">#1B1504</color>
+    <color name="orange">#D99E32</color>
+    <color name="light_green">#D5D9BA</color>
+    <color name="green">#ABBF15</color>
+    <color name="dark_green">#899911</color>
+    <color name="red">#BF1F1F</color>
+
+    <color name="board_default">#899911</color>
+    <color name="board_player1">#ABBF15</color>
+    <color name="board_player2">#ABBF15</color>
+
 </resources>

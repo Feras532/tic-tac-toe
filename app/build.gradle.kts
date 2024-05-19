@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "sa.kfupm.tic_tac_toe"
-        minSdk = 34
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

@@ -12,6 +12,11 @@ public class GameData {
     private String currentTurn;
     private boolean gameOver;
     private String winner;
+    private int winsPlayer1;
+    private int winsPlayer2;
+    private int lossesPlayer1;
+    private int lossesPlayer2;
+    private List<Integer> winningLineIndices;
 
     // Default constructor needed for Firebase
     public GameData() {
@@ -21,13 +26,15 @@ public class GameData {
     public GameData(String player1Id) {
         this.player1Id = player1Id;
         this.player2Id = "";
-        this.board = new ArrayList<>(9); //Cuz it is a 3x3 tic-tac-toe board
-        for (int i = 0; i < 9; i++) {
-            this.board.add(""); // Start my cells with empty value
-        }
+        this.board = new ArrayList<>(Arrays.asList("", "", "", "", "", "", "", "", ""));
         this.currentTurn = player1Id;
         this.gameOver = false;
         this.winner = "";
+        this.winsPlayer1 = 0;
+        this.winsPlayer2 = 0;
+        this.lossesPlayer1 = 0;
+        this.lossesPlayer2 = 0;
+        this.winningLineIndices = new ArrayList<>();
     }
 
     // Getters and setters
@@ -78,6 +85,47 @@ public class GameData {
     public void setWinner(String winner) {
         this.winner = winner;
     }
+
+    public int getWinsPlayer1() {
+        return winsPlayer1;
+    }
+
+    public void setWinsPlayer1(int winsPlayer1) {
+        this.winsPlayer1 = winsPlayer1;
+    }
+
+    public int getWinsPlayer2() {
+        return winsPlayer2;
+    }
+
+    public void setWinsPlayer2(int winsPlayer2) {
+        this.winsPlayer2 = winsPlayer2;
+    }
+
+    public int getLossesPlayer1() {
+        return lossesPlayer1;
+    }
+
+    public void setLossesPlayer1(int lossesPlayer1) {
+        this.lossesPlayer1 = lossesPlayer1;
+    }
+
+    public int getLossesPlayer2() {
+        return lossesPlayer2;
+    }
+
+    public void setLossesPlayer2(int lossesPlayer2) {
+        this.lossesPlayer2 = lossesPlayer2;
+    }
+
+    public List<Integer> getWinningLineIndices() {
+        return winningLineIndices;
+    }
+
+    public void setWinningLineIndices(List<Integer> winningLineIndices) {
+        this.winningLineIndices = winningLineIndices;
+    }
+
     public void reset() {
         this.board = Arrays.asList("", "", "", "", "", "", "", "", "");
         this.gameOver = false;
@@ -85,5 +133,6 @@ public class GameData {
         // Randomly choose who starts the game
         Random random = new Random();
         this.currentTurn = random.nextBoolean() ? player1Id : player2Id;
+        this.winningLineIndices.clear();
     }
 }
