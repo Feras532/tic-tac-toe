@@ -17,8 +17,4 @@ Welcome to the TicTacToe Multiplayer project, a simple yet engaging 1v1 Android 
 
 ## Video
 
-...
-
-## Setup
-
-...
+[Demo Video](https://youtu.be/bQo5RTzoPlg)
